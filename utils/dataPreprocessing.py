@@ -37,8 +37,16 @@ class DATA:
     """
     def rebuilding(self):
         ECG_pathList, ECG_labelList = self.getTrain()  # ECG文件路径列表和对应的标签列表（打乱并排序完成）
-        ECG_Batch = self.get_ECG_batch(ECG_pathList)  # ECG 24106*5000*8的输出矩阵
-        self.save_cache(ECG_Batch,ECG_labelList) # 缓存
+        print('ECG文件路径列表和对应的标签列表（打乱并排序完成）')
+        length = len(ECG_labelList)
+        print("len:" + str(length))
+        for i in range(0,math.ceil(length/self.cache_size)):
+            _from = (i)*self.cache_size
+            to = (i + 1) * self.cache_size
+            ECG_Batch = self.get_ECG_batch(ECG_pathList[_from:to])
+            self.save_cache(ECG_Batch, ECG_labelList[_from:to], _from,to)
+        # ECG_Batch = self.get_ECG_batch(ECG_pathList)  # ECG 24106*5000*8的输出矩阵
+        # self.save_cache(ECG_Batch,ECG_labelList,0) # 缓存
     #获取心率疾病种类
     def get_classes(self):
         file = open(self.classes_path,  encoding="UTF-8")
@@ -113,24 +121,29 @@ class DATA:
     """
         将数据与标注缓存
     """
-    def save_cache(self,ECG_Batch,ECG_labelList = None):
+    def save_cache(self,ECG_Batch,ECG_labelList ,_from,to):
         data_base_name = self.cache_path + 'data\\data_'
         label_base_name = self.cache_path + 'label\\label_'
         # if(ECG_labelList ==None ):
         #     ECG_labelList = self.ECG_labelList  # 要修改
-        for i in range(0,math.ceil(np.size(ECG_Batch,0)/self.cache_size)): # 储存data缓存
-            _from = i*self.cache_size
-            to = (i + 1) * self.cache_size
-            base_cache_name = 'cache_'
-            cache_name = base_cache_name + str(_from) + "_" + str(to)
-            with open(data_base_name + cache_name, 'wb') as f:
-                pickle.dump(ECG_Batch[_from:to], f)
-            with open(label_base_name + cache_name, 'wb') as f:
-                pickle.dump(ECG_labelList[_from:to], f)
-            print ("缓存第"+ str(_from) + "到第" + str(to) + "条数据")
+        # for i in range(0,math.ceil(np.size(ECG_Batch,0)/self.cache_size)): # 储存data缓存
+        #     _from = (i)*self.cache_size+start
+        #     to = (i + 1) * self.cache_size+start
+        #     base_cache_name = 'cache_'
+        #     cache_name = base_cache_name + str(_from) + "_" + str(to)
+        #     with open(data_base_name + cache_name, 'wb') as f:
+        #         pickle.dump(ECG_Batch[_from:to], f)
+        #     with open(label_base_name + cache_name, 'wb') as f:
+        #         pickle.dump(ECG_labelList[_from:to], f)
+        #     print ("缓存第"+ str(_from) + "到第" + str(to) + "条数据")
+        base_cache_name = 'cache_'
+        cache_name = base_cache_name + str(_from) + "_" + str(to)
+        with open(data_base_name + cache_name, 'wb') as f:
+            pickle.dump(ECG_Batch, f)
+        with open(label_base_name + cache_name, 'wb') as f:
+            pickle.dump(ECG_labelList, f)
+        print("缓存第" + str(_from) + "到第" + str(to) + "条数据")
 
-
-        pass
     """
     载入缓存中的数据
     _from ; 从第几条数据开始，读取cache_size个数据，必须是cache_size 的整数倍
@@ -165,7 +178,7 @@ class DATA:
             return self.data_cache[cache_cur:cache_cur + self.batch_size], self.labcel_cache[
                                                                            cache_cur:cache_cur + self.batch_size]
 if __name__ == '__main__':
-    VOC = DATA(True)
+    VOC = DATA(False)
     # print(VOC.ECG_Batch)
     # print(VOC.ECG_Batch.shape)
     # with open(VOC.cache_path + 'batch','wb') as f:
