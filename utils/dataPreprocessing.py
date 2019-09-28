@@ -62,7 +62,7 @@ class DATA:
     #读取ECG文件，得到一个5000*8的numpy
     '''
     def read_ECGfile(self, file_path):
-        f = open(file_path)
+        f = open(file_path, encoding="UTF-8")
         count = 0
         data_list = []
         for line in f:
