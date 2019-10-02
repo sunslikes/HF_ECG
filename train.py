@@ -10,7 +10,7 @@ if __name__ == '__main__':
     global_step = tf.train.create_global_step()
 
     optimizer = tf.train.GradientDescentOptimizer(
-        learning_rate= 0.05
+        learning_rate= config.LEARNING_RATE
     )
     op = slim.learning.create_train_op(
         net.loss,optimizer,global_step
