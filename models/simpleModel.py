@@ -27,8 +27,8 @@ class SimpleModel:
      """
      def build_network(self,input,output_num,is_training):
          net = input
-         net = tf.reshape(net,[self.batch_size,self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
-         net = inference(net) # ResNet34 的卷积层（去掉最后一层池化）
+         # net = tf.reshape(net,[self.batch_size,self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
+         # net = inference(net) # ResNet34 的卷积层（去掉最后一层池化）
          net = slim.flatten(net)
          net = slim.fully_connected(net, 1024)
          net = slim.fully_connected(net,256)

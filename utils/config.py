@@ -29,7 +29,8 @@ STAIRCASE = True # 若为true，每DECAY_STEPS次迭代更新学习率，反之�
 THRESHOLD = 0.8 # sigmoid函数出来超过这个值将映射为1
 
 SUMMARY_ITER = 10 # 每训练SUMMARY_ITER个批次进行一次评估（计算loss，输出log）
-SAVE_ITER = 1000  # 每训练SAVE_ITER个批次进行模型的保存
+SAVE_ITER = 100  # 每训练SAVE_ITER个批次进行模型的保存
+MAX_ITER  = 200    # 训练批次数
 
 
 
