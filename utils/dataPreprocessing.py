@@ -9,6 +9,8 @@ import numpy as np
 import os
 import pickle
 import math
+import tensorflow as tf
+import tensorflow.contrib.slim as slim
 
 class DATA:
     """
@@ -178,20 +180,18 @@ class DATA:
             return self.data_cache[cache_cur:cache_cur + self.batch_size], self.labcel_cache[
                                                                            cache_cur:cache_cur + self.batch_size]
 if __name__ == '__main__':
-    VOC = DATA(False)
+    VOC = DATA(True)
     # print(VOC.ECG_Batch)
     # print(VOC.ECG_Batch.shape)
     # with open(VOC.cache_path + 'batch','wb') as f:
     #     pickle.dump(VOC.ECG_Batch,f)
     # print(VOC.ECG_labelList[0:CONFIG.CACHE_SIZE])
-    VOC.load_cache(0)
-    print(VOC.get_batch())
-    print(VOC.get_batch())
-    print(VOC.get_batch())
-    print(VOC.get_batch())
-    print(VOC.get_batch())
-    print("5over")
-    print(VOC.get_batch())
-    print(VOC.get_batch())
+    x_train, y_train = VOC.get_batch()
+    print(np.asarray(x_train).shape)
+    print(y_train[0])
+
+
+
+
 
 
