@@ -4,7 +4,7 @@
 #@Author: 林先森
 #@File  : config.py
 
-DATA_PATH = 'D:\\良目\\天池大赛\\dataSet\\' # 数据集总目录
+DATA_PATH = 'D:\\programming\\PycharmProjects\\ComputerVision\\DataBase\\hefei_ECG\\' # 数据集总目录
 ARRYTHMIA_CLASSES_PATH = 'hf_round1_arrythmia.txt' # 分类文件路径
 LABEL_PATH = 'hf_round1_label.txt' # 标签文件路径
 TRAIN_PATH = 'train\\' # 训练集目录
