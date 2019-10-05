@@ -10,6 +10,7 @@ LABEL_PATH = 'hf_round1_label.txt' # 标签文件路径
 TRAIN_PATH = 'train\\' # 训练集文件夹
 CACHE_PATH = 'cache\\' # 缓存文件夹
 TEST_PATH = 'test\\testA\\' # 测试集文件夹
+TEST_CACHE = 'test\\cache\\'
 ANSWAR_PATH = 'test\\hf_round1_subA.txt' # 试卷
 BATCH_SIZE = 10
 CACHE_SIZE = 100*BATCH_SIZE #单个缓存文件的大小
