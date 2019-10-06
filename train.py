@@ -72,8 +72,8 @@ class Solver():
             }
             if step % self.summary_iter == 0:
                 # print("进行评估")
-                if step % (self.summary_iter * 10) == 0:
-                    print("计算loss")
+                if step % (self.summary_iter * 10) == 0: # 可修改计算loss的频率
+                    # print("计算loss")
                     train_timer.tic()
                     loss, _ = self.sess.run(
                         [ self.net.loss, self.train_op],
@@ -89,7 +89,7 @@ class Solver():
                     )
                     print(log_str)
                 else:
-                    print("输出日志")
+                    # print("输出日志")
                     train_timer.tic()
                     # summary_str, _ = self.sess.run(
                     #     [self.summary_op, self.train_op],
@@ -100,7 +100,7 @@ class Solver():
                     train_timer.toc()
                 # self.writer.add_summary(summary_str, step)
             else:
-                print("单纯训练")
+                # print("单纯训练")
                 train_timer.tic()
                 self.sess.run(self.train_op, feed_dict=feed_dict)
                 train_timer.toc()

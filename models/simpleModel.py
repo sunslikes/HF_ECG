@@ -38,15 +38,14 @@ class SimpleModel:
         将输出的一维向量变成onehot
      """
      def map2OneHot(self,logits):
-        # list = []
-        logits = tf.sigmoid(logits) # 将模型输出的结果通入sigmoid函数
+        list = []
         # list.append(logits)
         one = tf.ones_like(logits)
         zero = tf.zeros_like(logits)
         temp = tf.where(logits < self.threshold, x=zero, y=one) # 将元素二值化映射，大于threshold的设置为1，反之，0
         logits = tf.subtract(logits,logits) # 将图清零
         logits = tf.add(logits,temp) # 将映射结果加入（为了获取梯度，不知道有没有更好的方法# ）
-        # list.append(logits)
+        list.append(logits)
         return logits
      """
      返回损失函数
