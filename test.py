@@ -12,6 +12,7 @@ import math
 import tensorflow as tf
 import datetime
 from models.simpleModel import SimpleModel
+from utils.timer import Timer
 
 class Test():
     def __init__(self, rebuild):
@@ -74,7 +75,6 @@ class Test():
         return : 返回 cache_size 大小的数据
     """
     def load_cache(self, _from):
-        print(_from)
         data_base_name = self.cache_path
         data = []
         for root, sub_folders, files in os.walk(data_base_name):  # os.walk返回一个三元组(root,dirs,files)
@@ -112,7 +112,15 @@ class Test():
                 if os.path.isfile(os.path.join(self.test_path, i)):
                     count += 1
             results = []
+            test_Timer = Timer()
             for i in range(0, count):
+                if i % 1000 == 1 :
+                    log_str = """{},step: {}, 预计还需要： {}""".format(
+                        datetime.datetime.now().strftime('%m-%d %H:%M:%S'),
+                        int(i),
+                        test_Timer.remain(i, count)
+                    )
+                    print(log_str)
                 x = self.get_batch()
                 y = sess.run([self.net.test_logits], feed_dict={self.net.input: x})
                 results.append(y[0].tolist()[0])
@@ -120,7 +128,8 @@ class Test():
             sample = open(self.answer_file, encoding='utf-8')
             if not os.path.exists(self.answers_dir):
                 os.makedirs(self.answers_dir)
-            answer = open(os.path.join(self.answers_dir , self.model_file.split('-')[0] + str(datetime.datetime.now().strftime('%Y_%m_%d_%H_%M'))+'.txt'), 'w', encoding='utf-8')
+            answer_path = os.path.join(self.answers_dir , self.model_file.split('-')[0] + str(datetime.datetime.now().strftime('%Y_%m_%d_%H_%M'))+'.txt')
+            answer = open(answer_path, 'w', encoding='utf-8')
             count = 0
             for line in sample:
                 newline = line.split('\n')[0]
@@ -130,10 +139,10 @@ class Test():
                         newline = newline + '\t' + self.data.classes[number]
                     number += 1
                 newline += '\n'
-                print(newline)
+                # print(newline)
                 answer.write(newline)
                 count += 1
-            print("测试结束，请在" + os.path.realpath(answer) + '查看')
+            print("测试结束，请在" + answer_path + '查看')
 
 
 if __name__ == '__main__':
