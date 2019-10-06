@@ -21,18 +21,20 @@ class SimpleModel:
                  tf.float32,[None,self.label_num]
              )
              self.loss = self.get_loss(self.logits,self.labels) # 函数未构建
+         else:
+             self.test_logits = self.map2OneHot(self.logits)
 
      """
      构建网络
      """
      def build_network(self,input,output_num,is_training):
          net = input
-         net = tf.reshape(net,[self.batch_size,self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
-         net = inference(net) # ResNet34 的卷积层（去掉最后一层池化）
+         # net = tf.reshape(net,[self.batch_size,self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
+         # net = inference(net) # ResNet34 的卷积层（去掉最后一层池化）
          net = slim.flatten(net)
-         net = slim.fully_connected(net, 1024)
-         net = slim.fully_connected(net,256)
-         net = slim.fully_connected(net,output_num)
+         net = slim.fully_connected(net, 1024, trainable=is_training)
+         net = slim.fully_connected(net,256, trainable=is_training)
+         net = slim.fully_connected(net,output_num, trainable=is_training)
          return net
      """
         将输出的一维向量变成onehot

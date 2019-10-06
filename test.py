@@ -11,6 +11,7 @@ import pickle
 import math
 import numpy as np
 import tensorflow as tf
+from models.simpleModel import SimpleModel
 
 class Test():
     def __init__(self, rebuild):
@@ -18,12 +19,14 @@ class Test():
         self.answer_file = config.DATA_PATH + config.ANSWAR_PATH
         self.cache_path = config.DATA_PATH + config.TEST_CACHE + 'data\\'# 测试集数据缓存路径
         self.cache_size = config.CACHE_SIZE
-        if rebuild:
+        if rebuild:  # 是否重新写入函数
             self.rebuilding()
         self.cursor = 0  # 指针
         self.batch_size = 1
         self.cache_block_num = 0  # 缓存块号
         self.tdata_cache = self.load_cache(0)
+        self.net = SimpleModel(False)
+        self.weight_file = config.WEIGHTS_FILE
 
     """
         第一次数据预处理
@@ -91,7 +94,22 @@ class Test():
             self.tdata_cache= self.load_cache(cache_block_num * self.cache_size)
             return self.tdata_cache[cache_cur:cache_cur + self.batch_size]
 
+    def test(self):
+        with tf.Session() as sess:
+            if self.weight_file is None:
+                print("滚去跑模型！")
+                return
+            saver = tf.train.Saver()
+            saver.restore(sess, save_path=os.path.realpath(self.weight_file)) # 加载模型
+            ls = os.listdir(self.test_path)
+            count = 0 # 计算有多少个数据
+            for i in ls:
+                if os.path.isfile(os.path.join(self.test_path, i)):
+                    count += 1
+            for i in range(0, count):
+                x = self.get_batch()
+                y = sess.run([self.net.test_logits], feed_dict={self.net.input: x})
+                pass
 if __name__ == '__main__':
     test = Test(False)
-    for i in range(0, 8036):
-        test.get_batch()
+    test.test()

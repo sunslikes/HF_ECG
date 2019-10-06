@@ -180,12 +180,15 @@ class DATA:
             return self.data_cache[cache_cur:cache_cur + self.batch_size], self.labcel_cache[
                                                                            cache_cur:cache_cur + self.batch_size]
 if __name__ == '__main__':
-    VOC = DATA(True)
+    VOC = DATA(False)
     # print(VOC.ECG_Batch)
     # print(VOC.ECG_Batch.shape)
     # with open(VOC.cache_path + 'batch','wb') as f:
     #     pickle.dump(VOC.ECG_Batch,f)
     # print(VOC.ECG_labelList[0:CONFIG.CACHE_SIZE])
+    for i in range(0,20100):
+        x_train,y_train = VOC.get_batch()
+        print(x_train)
     x_train, y_train = VOC.get_batch()
     print(np.asarray(x_train).shape)
     print(y_train[0])
