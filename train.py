@@ -21,7 +21,7 @@ class Solver():
         self.save_iter = config.SAVE_ITER # 保存模型周期
         self.max_iter = config.MAX_ITER   # 训练的批次数
         self.output_dir = os.path.join(
-            config.OUTPUT_DIR, datetime.datetime.now().strftime('%Y_%m_%d_%H_%M')) # 本次模型输出的跟文件夹
+            config.OUTPUT_DIR, self.net.net_name + '-' + (datetime.datetime.now().strftime('%Y_%m_%d_%H_%M'))) # 本次模型输出的跟文件夹
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)      # 若上方文件夹不存在，创建
         self.save_cfg() # 储存本次训练配置文件信息
@@ -72,8 +72,8 @@ class Solver():
             }
             if step % self.summary_iter == 0:
                 # print("进行评估")
-                if step % (self.summary_iter * 10) == 0:
-                    print("计算loss")
+                if step % (self.summary_iter * 10) == 0: # 可修改计算loss的频率
+                    # print("计算loss")
                     train_timer.tic()
                     loss, _ = self.sess.run(
                         [ self.net.loss, self.train_op],
@@ -89,7 +89,7 @@ class Solver():
                     )
                     print(log_str)
                 else:
-                    print("输出日志")
+                    # print("输出日志")
                     train_timer.tic()
                     # summary_str, _ = self.sess.run(
                     #     [self.summary_op, self.train_op],
@@ -100,7 +100,7 @@ class Solver():
                     train_timer.toc()
                 # self.writer.add_summary(summary_str, step)
             else:
-                print("单纯训练")
+                # print("单纯训练")
                 train_timer.tic()
                 self.sess.run(self.train_op, feed_dict=feed_dict)
                 train_timer.toc()

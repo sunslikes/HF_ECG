@@ -5,6 +5,7 @@ from tensorflow.contrib import slim
 from models.Resnet34 import inference
 class SimpleModel:
      def __init__(self,is_training = True):
+         self.net_name = self.__class__.__name__
          self.lead_count = config.LEAD_COUNT # 导联数
          self.length = config.LENGTH #  数据十秒内记录的次数
          self.label_num = config.LABEL_NUM # 预测异常数量
@@ -40,15 +41,14 @@ class SimpleModel:
         将输出的一维向量变成onehot
      """
      def map2OneHot(self,logits):
-        # list = []
-        logits = tf.sigmoid(logits) # 将模型输出的结果通入sigmoid函数
+        list = []
         # list.append(logits)
         one = tf.ones_like(logits)
         zero = tf.zeros_like(logits)
         temp = tf.where(logits < self.threshold, x=zero, y=one) # 将元素二值化映射，大于threshold的设置为1，反之，0
         logits = tf.subtract(logits,logits) # 将图清零
         logits = tf.add(logits,temp) # 将映射结果加入（为了获取梯度，不知道有没有更好的方法# ）
-        # list.append(logits)
+        list.append(logits)
         return logits
      """
      返回损失函数

@@ -9,16 +9,18 @@ import utils.dataPreprocessing as dp
 import os
 import pickle
 import math
-import numpy as np
 import tensorflow as tf
+import datetime
 from models.simpleModel import SimpleModel
 
 class Test():
     def __init__(self, rebuild):
+        self.data = dp.DATA(False) # 获取疾病种类和其中其它的方法
         self.test_path = config.DATA_PATH + config.TEST_PATH # 测试集目录
         self.answer_file = config.DATA_PATH + config.ANSWAR_PATH
         self.cache_path = config.DATA_PATH + config.TEST_CACHE + 'data\\'# 测试集数据缓存路径
         self.cache_size = config.CACHE_SIZE
+        self.answers_dir = config.DATA_PATH + config.ANSWERS_DIR
         if rebuild:  # 是否重新写入函数
             self.rebuilding()
         self.cursor = 0  # 指针
@@ -26,7 +28,8 @@ class Test():
         self.cache_block_num = 0  # 缓存块号
         self.tdata_cache = self.load_cache(0)
         self.net = SimpleModel(False)
-        self.weight_file = config.WEIGHTS_FILE
+        self.model_file = 'SimpleModel-2019_10_07_02_15'
+        self.model_dir = os.path.join(config.OUTPUT_DIR, self.model_file)
 
     """
         第一次数据预处理
@@ -42,7 +45,9 @@ class Test():
                 to = (i + 1) * self.cache_size
             else:
                 to = _from + remain
-            ECG_Batch = dp.DATA(False).get_ECG_batch(ECG_pathList[_from:to])
+            ECG_Batch = self.data.get_ECG_batch(ECG_pathList[_from:to])
+            if not os.path.exists(self.cache_path + 'data'):
+                os.makedirs(self.cache_path + 'data')
             data_base_name = self.cache_path + 'data\\tdata_'
             base_cache_name = 'cache_'
             cache_name = base_cache_name + str(_from) + "_" + str(to)
@@ -86,8 +91,6 @@ class Test():
         cache_cur = self.cursor % self.cache_size  # 计算块内指针
         self.cursor += self.batch_size  # 指针迭代
         if (cache_block_num == self.cache_block_num):
-            if cache_block_num == 8:
-                print(str(cache_block_num) + " " + str(cache_cur), end=' ')
             return self.tdata_cache[cache_cur:cache_cur + self.batch_size]
         else:
             self.cache_block_num = cache_block_num
@@ -96,20 +99,43 @@ class Test():
 
     def test(self):
         with tf.Session() as sess:
-            if self.weight_file is None:
-                print("滚去跑模型！")
-                return
             saver = tf.train.Saver()
-            saver.restore(sess, save_path=os.path.realpath(self.weight_file)) # 加载模型
+            if not os.path.exists(self.model_dir):
+                print("滚去跑模型")
+                return
+            model_file = tf.train.latest_checkpoint(self.model_dir)
+            saver.restore(sess, model_file) # 加载模型
+            print("重载训练模型")
             ls = os.listdir(self.test_path)
             count = 0 # 计算有多少个数据
             for i in ls:
                 if os.path.isfile(os.path.join(self.test_path, i)):
                     count += 1
+            results = []
             for i in range(0, count):
                 x = self.get_batch()
                 y = sess.run([self.net.test_logits], feed_dict={self.net.input: x})
-                pass
+                results.append(y[0].tolist()[0])
+            # 得到预测的onthots,接下来转成文本并保存
+            sample = open(self.answer_file, encoding='utf-8')
+            if not os.path.exists(self.answers_dir):
+                os.makedirs(self.answers_dir)
+            answer = open(os.path.join(self.answers_dir , self.model_file.split('-')[0] + str(datetime.datetime.now().strftime('%Y_%m_%d_%H_%M'))+'.txt'), 'w', encoding='utf-8')
+            count = 0
+            for line in sample:
+                newline = line.split('\n')[0]
+                number = 0 # 第几类
+                for hot in results[count]:
+                    if abs(hot - 1) < 1e-3:
+                        newline = newline + '\t' + self.data.classes[number]
+                    number += 1
+                newline += '\n'
+                print(newline)
+                answer.write(newline)
+                count += 1
+            print("测试结束，请在" + os.path.realpath(answer) + '查看')
+
+
 if __name__ == '__main__':
     test = Test(False)
     test.test()
