@@ -5,6 +5,8 @@
 #@File  : config.py
 import os
 
+MODEL_NAME = '' # 模型名称 用于保存
+
 DATA_PATH = 'D:/良目/天池大赛/dataSet/' # 数据集总目录
 ARRYTHMIA_CLASSES_PATH = 'hf_round1_arrythmia.txt' # 分类文件路径
 LABEL_PATH = 'hf_round1_label.txt' # 标签文件路径
