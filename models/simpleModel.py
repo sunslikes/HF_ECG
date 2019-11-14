@@ -37,7 +37,7 @@ class SimpleModel:
          net = slim.flatten(net)
          net = slim.fully_connected(net, 1024, trainable=is_training)
          net = slim.fully_connected(net,256, trainable=is_training)
-         net = slim.fully_connected(net,output_num, trainable=is_training)
+         net = slim.fully_connected(net,output_num, trainable=is_training, activation_fn=None)
          return net
      """
         将输出的一维向量变成onehot
@@ -56,10 +56,13 @@ class SimpleModel:
      返回损失函数
      """
      def get_loss(self,logits,labels):
-         logits = self.map2OneHot(logits) # 映射
-         out = -tf.reduce_mean(labels*tf.log(tf.clip_by_value(logits,1e-10,1.0)))
+
+         # logits = self.map2OneHot(logits) # 映射
+
+         # out = -tf.reduce_mean(labels*tf.log(tf.clip_by_value(logits,1e-10,1.0)))
          # return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
-         return out
+         # return out
+         return  tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=logits,labels=labels))
 
 if __name__ == '__main__':
     model = SimpleModel(True)

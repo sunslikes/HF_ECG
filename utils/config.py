@@ -5,6 +5,9 @@
 #@File  : config.py
 import os
 
+MODEL_NAME = '' # 模型名称 用于保存
+
+# DATA_PATH = 'D:/良目/天池大赛/dataSet/' # 数据集总目录
 DATA_PATH = 'D:\\programming\\PycharmProjects\\ComputerVision\\DataBase\\hefei_ECG\\' # 数据集总目录
 ARRYTHMIA_CLASSES_PATH = 'hf_round1_arrythmia.txt' # 分类文件路径
 LABEL_PATH = 'hf_round1_label.txt' # 标签文件路径
@@ -16,6 +19,7 @@ ANSWAR_PATH = 'test\\hf_round1_subA.txt' # 试卷
 ANSWERS_DIR = 'test\\answers\\' # 测试结果目录
 WEIGHTS_DIR = os.path.join(DATA_PATH,'weights') # 模型文件夹
 WEIGHTS_FILE = None # 迁移模型
+# WEIGHTS_FILE = 'D:\\良目\\天池大赛\\dataSet\\output\\2019_10_04_23_36\\ECG-100'                          # 迁移模型
 # WEIGHTS_FILE = os.path.join(WEIGHTS_DIR,'ECG-100.data-00000-of-00001')  # 迁移模型
 OUTPUT_DIR = os.path.join(DATA_PATH, 'output') # 模型输出文件夹
 
@@ -38,7 +42,7 @@ THRESHOLD = 0.5 # sigmoid函数出来超过这个值将映射为1
 
 SUMMARY_ITER = 10 # 每训练SUMMARY_ITER个批次进行一次评估（计算loss，输出log）
 SAVE_ITER = 500  # 每训练SAVE_ITER个批次进行模型的保存
-MAX_ITER = 24106   # 训练批次
+MAX_ITER = 2000   # 训练批次
 
 
 
