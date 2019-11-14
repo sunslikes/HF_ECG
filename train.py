@@ -21,7 +21,7 @@ class Solver():
         self.save_iter = config.SAVE_ITER # 保存模型周期
         self.max_iter = config.MAX_ITER   # 训练的批次数
         self.output_dir = os.path.join(
-            config.OUTPUT_DIR, datetime.datetime.now().strftime('%Y_%m_%d_%H_%M')) # 本次模型输出的跟文件夹
+            config.OUTPUT_DIR, self.net.net_name + '-' + (datetime.datetime.now().strftime('%Y_%m_%d_%H_%M'))) # 本次模型输出的跟文件夹
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)      # 若上方文件夹不存在，创建
         self.save_cfg() # 储存本次训练配置文件信息
