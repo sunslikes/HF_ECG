@@ -20,13 +20,15 @@ WEIGHTS_FILE = None # 迁移模型
 OUTPUT_DIR = os.path.join(DATA_PATH, 'output') # 模型输出文件夹
 
 
-BATCH_SIZE = 10
+BATCH_SIZE = 1
 CACHE_SIZE = 100*BATCH_SIZE #单个缓存文件的大小
+TEST_CACHE_SIZE = 1000 # 测试集的单个缓存文件的大小（非必要不需要改动
 READ_STEP  = 5*CACHE_SIZE #单步读取量
 
 LENGTH = 5000  # 数据十秒内记录的次数
 LEAD_COUNT = 8 # 导联数，默认按
 LABEL_NUM = 55 # 异常标签数
+
 
 LEARNING_RATE = 0.02 # 学习率 0.05
 DECAY_STEPS = 30000 #
@@ -36,7 +38,7 @@ THRESHOLD = 0.5 # sigmoid函数出来超过这个值将映射为1
 
 SUMMARY_ITER = 10 # 每训练SUMMARY_ITER个批次进行一次评估（计算loss，输出log）
 SAVE_ITER = 500  # 每训练SAVE_ITER个批次进行模型的保存
-MAX_ITER = 2000   # 训练批次
+MAX_ITER = 24106   # 训练批次
 
 
 

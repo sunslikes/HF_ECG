@@ -20,7 +20,7 @@ class Test():
         self.test_path = config.DATA_PATH + config.TEST_PATH # 测试集目录
         self.answer_file = config.DATA_PATH + config.ANSWAR_PATH
         self.cache_path = config.DATA_PATH + config.TEST_CACHE + 'data\\'# 测试集数据缓存路径
-        self.cache_size = config.CACHE_SIZE
+        self.cache_size = config.TEST_CACHE_SIZE
         self.answers_dir = config.DATA_PATH + config.ANSWERS_DIR
         if rebuild:  # 是否重新写入函数
             self.rebuilding()
@@ -29,7 +29,7 @@ class Test():
         self.cache_block_num = 0  # 缓存块号
         self.tdata_cache = self.load_cache(0)
         self.net = SimpleModel(False)
-        self.model_file = 'SimpleModel-2019_10_07_02_15'
+        self.model_file = 'SimpleModel-2019_10_07_03_57'
         self.model_dir = os.path.join(config.OUTPUT_DIR, self.model_file)
 
     """
@@ -114,7 +114,7 @@ class Test():
             results = []
             test_Timer = Timer()
             for i in range(0, count):
-                if i % 1000 == 1 :
+                if i % 1000 == 1:
                     log_str = """{},step: {}, 预计还需要： {}""".format(
                         datetime.datetime.now().strftime('%m-%d %H:%M:%S'),
                         int(i),

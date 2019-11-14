@@ -3,6 +3,7 @@ import tensorflow as tf
 from utils import config
 from tensorflow.contrib import slim
 from models.Resnet34 import inference
+from models.conv import convlayers
 class SimpleModel:
      def __init__(self,is_training = True):
          self.net_name = self.__class__.__name__
@@ -30,7 +31,8 @@ class SimpleModel:
      """
      def build_network(self,input,output_num,is_training):
          net = input
-         # net = tf.reshape(net,[self.batch_size,self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
+         net = tf.reshape(net,[self.batch_size,self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
+         net = convlayers(net, is_training)
          # net = inference(net) # ResNet34 的卷积层（去掉最后一层池化）
          net = slim.flatten(net)
          net = slim.fully_connected(net, 1024, trainable=is_training)
