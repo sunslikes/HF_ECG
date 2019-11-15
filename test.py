@@ -146,5 +146,5 @@ class Test():
 
 
 if __name__ == '__main__':
-    test = Test(False)
+    test = Test(True)
     test.test()
