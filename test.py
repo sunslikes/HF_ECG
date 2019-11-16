@@ -17,11 +17,12 @@ from utils.timer import Timer
 class Test():
     def __init__(self, rebuild):
         self.data = dp.DATA(False) # 获取疾病种类和其中其它的方法
-        self.test_path = config.DATA_PATH + config.TEST_PATH # 测试集目录
-        self.answer_file = config.DATA_PATH + config.ANSWAR_PATH
-        self.cache_path = config.DATA_PATH + config.TEST_CACHE + 'data\\'# 测试集数据缓存路径
+        self.test_path = os.path.join(config.DATA_PATH, config.TEST_PATH)  # 测试集目录
+        self.answer_file = os.path.join(config.DATA_PATH, config.ANSWAR_PATH)
+        self.cache_path = os.path.join(config.DATA_PATH, config.TEST_CACHE) # 测试集数据缓存路径
+        self.cache_path = os.path.join(self.cache_path, "data") # 测试集数据缓存路径
         self.cache_size = config.TEST_CACHE_SIZE
-        self.answers_dir = config.DATA_PATH + config.ANSWERS_DIR
+        self.answers_dir = os.path.join(config.DATA_PATH, config.ANSWERS_DIR)
         if rebuild:  # 是否重新写入函数
             self.rebuilding()
         self.cursor = 0  # 指针
@@ -29,7 +30,7 @@ class Test():
         self.cache_block_num = 0  # 缓存块号
         self.tdata_cache = self.load_cache(0)
         self.net = SimpleModel(False)
-        self.model_file = '2019_11_13_22_58'
+        self.model_file = 'SimpleModel-2019_10_07_03_57'
         self.model_dir = os.path.join(config.OUTPUT_DIR, self.model_file)
 
     """
@@ -49,7 +50,7 @@ class Test():
             ECG_Batch = self.data.get_ECG_batch(ECG_pathList[_from:to])
             if not os.path.exists(self.cache_path):
                 os.makedirs(self.cache_path)
-            data_base_name = self.cache_path + 'data\\tdata_'
+            data_base_name = self.cache_path + '/tdata_'
             base_cache_name = 'cache_'
             cache_name = base_cache_name + str(_from) + "_" + str(to)
             with open(data_base_name + cache_name, 'wb') as f:
@@ -146,5 +147,5 @@ class Test():
 
 
 if __name__ == '__main__':
-    test = Test(False)
+    test = Test(True)
     test.test()
