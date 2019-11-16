@@ -18,10 +18,10 @@ class DATA:
     """
     def __init__(self,rebuild):
         self.data_path = CONFIG.DATA_PATH  # 数据集总目录
-        self.train_path = self.data_path + CONFIG.TRAIN_PATH # 训练集目录
-        self.classes_path = self.data_path + CONFIG.ARRYTHMIA_CLASSES_PATH # 分类文件路径
-        self.label_path = self.data_path + CONFIG.LABEL_PATH # 标签文件路径
-        self.cache_path = self.data_path + CONFIG.CACHE_PATH # 缓存文件夹路径
+        self.train_path = os.path.join(self.data_path, CONFIG.TRAIN_PATH)  # 训练集目录
+        self.classes_path = os.path.join(self.data_path, CONFIG.ARRYTHMIA_CLASSES_PATH) # 分类文件路径
+        self.label_path = os.path.join(self.data_path, CONFIG.LABEL_PATH) # 标签文件路径
+        self.cache_path = os.path.join(self.data_path, CONFIG.CACHE_PATH) # 缓存文件夹路径
         self.cache_size = CONFIG.CACHE_SIZE # 单个缓存文件的大小
         self.data_length = CONFIG.LENGTH # ECG十秒内记录的次数
         self.lead_count = CONFIG.LEAD_COUNT # 导联数
@@ -73,7 +73,7 @@ class DATA:
             # 初始化标签
             list = line.split()
             fileName = list[0] #取得ECG文件名称
-            fileName = self.train_path + fileName
+            fileName = os.path.join(self.train_path, fileName)
             labelNumber = ECG_paths.index(fileName)
             for word in list:
                 if word in self.classes:
@@ -152,8 +152,8 @@ class DATA:
     return : 返回 cache_size 大小的数据
     """
     def load_cache(self,_from):
-        data_base_name = self.cache_path + 'data\\data_'
-        label_base_name = self.cache_path + 'label\\label_'
+        data_base_name = os.path.join(self.cache_path, 'data\\data_')
+        label_base_name = os.path.join(self.cache_path, 'label\\label_')
         base_cache_name = 'cache_'
         data_path = data_base_name + base_cache_name + str(_from) + "_" + str(_from + self.cache_size)
         label_path = label_base_name + base_cache_name + str(_from) + "_" + str(_from + self.cache_size)
