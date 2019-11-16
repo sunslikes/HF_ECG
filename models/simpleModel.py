@@ -5,7 +5,7 @@ from tensorflow.contrib import slim
 from models.Resnet34 import inference
 class SimpleModel:
      def __init__(self,is_training = True):
-         self.net_name = self.__class__.__name__
+         self.net_name = "Resnet34"
          self.lead_count = config.LEAD_COUNT # 导联数
          self.length = config.LENGTH #  数据十秒内记录的次数
          self.label_num = config.LABEL_NUM # 预测异常数量
@@ -30,7 +30,8 @@ class SimpleModel:
      """
      def build_network(self,input,output_num,is_training):
          net = input
-         net = tf.reshape(net,[self.batch_size,self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
+
+         net = tf.reshape(net,[tf.shape(net)[0],self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
          net = inference(net, is_training)
          # net = inference(net) # ResNet34 的卷积层（去掉最后一层池化）
          net = slim.flatten(net)

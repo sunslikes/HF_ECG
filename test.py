@@ -30,7 +30,7 @@ class Test():
         self.cache_block_num = 0  # 缓存块号
         self.tdata_cache = self.load_cache(0)
         self.net = SimpleModel(False)
-        self.model_file = 'SimpleModel-2019_10_07_03_57'
+        self.model_file = 'SimpleModel-2019_11_16_14_05'
         self.model_dir = os.path.join(config.OUTPUT_DIR, self.model_file)
 
     """
@@ -147,5 +147,5 @@ class Test():
 
 
 if __name__ == '__main__':
-    test = Test(True)
+    test = Test(False)
     test.test()

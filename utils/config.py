@@ -22,10 +22,11 @@ WEIGHTS_FILE = None # 迁移模型
 # WEIGHTS_FILE = os.path.join(WEIGHTS_DIR,'ECG-100.data-00000-of-00001')  # 迁移模型
 OUTPUT_DIR = os.path.join(DATA_PATH, 'output') # 模型输出文件夹
 
-BATCH_SIZE = 10
-CACHE_SIZE = 100* BATCH_SIZE#单个缓存文件的大小
+BATCH_SIZE = 40
+CACHE_SIZE = 25* BATCH_SIZE#单个缓存文件的大小
 TEST_CACHE_SIZE = 1000 # 测试集的单个缓存文件的大小（非必要不需要改动
 READ_STEP  = 5*CACHE_SIZE #单步读取量
+DATASET_SIZE = 24110 # 训练集的数据量
 
 LENGTH = 5000  # 数据十秒内记录的次数
 LEAD_COUNT = 8 # 导联数，默认按
@@ -38,8 +39,8 @@ STAIRCASE = True # 若为true，每DECAY_STEPS次迭代更新学习率，反之�
 THRESHOLD = 0.5 # sigmoid函数出来超过这个值将映射为1
 
 SUMMARY_ITER = 100 # 每训练SUMMARY_ITER个批次进行一次评估（计算loss，输出log）
-SAVE_ITER = 1000  # 每训练SAVE_ITER个批次进行模型的保存
-MAX_ITER = 20000   # 训练批次
+SAVE_ITER = 10  # 每训练SAVE_ITER个批次进行模型的保存
+MAX_ITER = 200   # 训练批次
 
 
 

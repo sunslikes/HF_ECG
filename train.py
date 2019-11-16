@@ -115,6 +115,10 @@ class Solver():
 
 
 if __name__ == '__main__':
+
+
+    # tf.device('/GPU')
+    os.environ["CUDA_VISIBLE_DEVICES"] = "1"
     data = DATA(False)
     net = SimpleModel()
     solver = Solver(net,data)

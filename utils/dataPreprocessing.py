@@ -170,11 +170,14 @@ class DATA:
     def get_batch(self):
         cache_block_num = math.floor((self.cursor)/self.cache_size) #计算当前缓存块号码
         cache_cur = self.cursor % self.cache_size #计算块内指针
-        self.cursor += self.batch_size # 指针迭代
+        #self.cursor += self.batch_size # 指针迭代
+        self.cursor = (self.cursor+self.batch_size)%CONFIG.DATASET_SIZE  #指针迭代
+
         if(cache_block_num == self.cache_block_num):
             return self.data_cache[cache_cur:cache_cur+self.batch_size],self.labcel_cache[cache_cur:cache_cur+self.batch_size]
         else:
-            print(cache_block_num)
+            print('正在读取： 第'+str(cache_block_num)+'块缓存，下一个批次的指针是：' + str(self.cursor) +'块内指针是 : ' + str(cache_cur))
+            #print(cache_block_num)
             self.cache_block_num = cache_block_num
             self.data_cache,self.labcel_cache = self.load_cache(cache_block_num*self.cache_size)
             return self.data_cache[cache_cur:cache_cur + self.batch_size], self.labcel_cache[
