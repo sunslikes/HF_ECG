@@ -74,15 +74,15 @@ def inference(input_tensor, regularizer = None, trainable=True):
                 # #最后全连接层
                 # with tf.variable_scope('layer34-fc'):
                 #     fc_weights = tf.get_variable("weight", [nodes, NUM_LABELS],initializer=tf.truncated_normal_initializer(stddev=0.1))
-                # 
+                #
                 #     # if regularizer != None:
                 #     #     tf.add_to_collection('losses', regularizer(fc_weights))
-                # 
+                #
                 #     fc_biases = tf.get_variable("bias", [NUM_LABELS],initializer=tf.constant_initializer(0.1))
                 #     fc = tf.nn.relu(tf.matmul(reshaped, fc_weights) + fc_biases)
-                # 
+                #
                 #     # if train:
                 #     #     fc = tf.nn.dropout(fc, 0.5)
                 #     #     return fc
-                # 
+                #
                 #     return fc
