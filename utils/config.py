@@ -23,7 +23,7 @@ WEIGHTS_FILE = None # 迁移模型
 OUTPUT_DIR = os.path.join(DATA_PATH, 'output') # 模型输出文件夹
 
 BATCH_SIZE = 10
-CACHE_SIZE = 100*BATCH_SIZE #单个缓存文件的大小
+CACHE_SIZE = 100* BATCH_SIZE#单个缓存文件的大小
 TEST_CACHE_SIZE = 1000 # 测试集的单个缓存文件的大小（非必要不需要改动
 READ_STEP  = 5*CACHE_SIZE #单步读取量
 

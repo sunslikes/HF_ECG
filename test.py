@@ -29,7 +29,7 @@ class Test():
         self.cache_block_num = 0  # 缓存块号
         self.tdata_cache = self.load_cache(0)
         self.net = SimpleModel(False)
-        self.model_file = 'SimpleModel-2019_10_07_03_57'
+        self.model_file = '2019_11_13_22_58'
         self.model_dir = os.path.join(config.OUTPUT_DIR, self.model_file)
 
     """
@@ -47,8 +47,8 @@ class Test():
             else:
                 to = _from + remain
             ECG_Batch = self.data.get_ECG_batch(ECG_pathList[_from:to])
-            if not os.path.exists(self.cache_path + 'data'):
-                os.makedirs(self.cache_path + 'data')
+            if not os.path.exists(self.cache_path):
+                os.makedirs(self.cache_path)
             data_base_name = self.cache_path + 'data\\tdata_'
             base_cache_name = 'cache_'
             cache_name = base_cache_name + str(_from) + "_" + str(to)
@@ -146,5 +146,5 @@ class Test():
 
 
 if __name__ == '__main__':
-    test = Test(True)
+    test = Test(False)
     test.test()
