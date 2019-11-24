@@ -54,7 +54,7 @@ class SimpleModel:
          # net = inference(net) # ResNet34 的卷积层（去掉最后一层池化）
          net = slim.flatten(net)
          net = slim.fully_connected(net, 1024, trainable=is_training)
-         net = slim.fully_connected(net,256, trainable=is_training)
+         # net = slim.fully_connected(net,256, trainable=is_training)
          net = slim.fully_connected(net,output_num, trainable=is_training, activation_fn=None)
          return net
      """

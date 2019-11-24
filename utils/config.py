@@ -43,7 +43,7 @@ THRESHOLD = 0.5 # sigmoid函数出来超过这个值将映射为1
 
 SUMMARY_ITER = 10 # 每训练SUMMARY_ITER个批次进行一次评估（计算loss，输出log）
 SAVE_ITER = 10000  # 每训练SAVE_ITER个批次进行模型的保存
-MAX_ITER = 30000   # 训练批次
+MAX_ITER = 20000   # 训练批次
 
 
 
