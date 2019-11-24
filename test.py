@@ -30,7 +30,7 @@ class Test():
         self.cache_block_num = 0  # 缓存块号
         self.tdata_cache = self.load_cache(0)
         self.net = SimpleModel(False)
-        self.model_file = 'SimpleModel-2019_11_16_14_05'
+        self.model_file = 'Resnet34-2019_11_23_19_06'
         self.model_dir = os.path.join(config.OUTPUT_DIR, self.model_file)
 
     """
@@ -133,7 +133,7 @@ class Test():
             answer = open(answer_path, 'w', encoding='utf-8')
             count = 0
             for line in sample:
-                newline = line.split('\n')[0]
+                newline = line.split('\t')[0]  #lyl修改用於測試訓練集，原代碼為：newline = line.split('\n')[0]
                 number = 0 # 第几类
                 for hot in results[count]:
                     if abs(hot - 1) < 1e-3:

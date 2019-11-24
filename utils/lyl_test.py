@@ -15,14 +15,16 @@ def test_model():
     logits = net.logits
     op = net.map2OneHot(net.logits)
     loss = net.loss
+    accuracy_op = net.accuracy
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
-        logits_result,loss_result,result = sess.run([logits,loss,op],feed_dict={net.input:x_train , net.labels :y_train})
+        logits_result,loss_result,result,accuracy = sess.run([logits,loss,op,accuracy_op],feed_dict={net.input:x_train , net.labels :y_train})
         # result = sess.run(op,feed_dict={net.input:x_train , net.labels :y_train})
     print('logits'+ str(logits_result))
     print('map_to: ' + str(result))
     print('labels : ' + str(y_train))
     print('loss: '+ str(loss_result))
+    print('accuracy: ' + str(accuracy))
 def test_loss():
     logits = tf.zeros([10,55])
     _ = [x for x in range(0,55)]
