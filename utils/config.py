@@ -7,7 +7,7 @@ import os
 
 MODEL_NAME = '' # 模型名称 用于保存
 
-DATA_PATH = 'C:/Users/Admin/PycharmProjects/HF_ECG/dataSet/' # 数据集总目录
+DATA_PATH = 'D:\良目\天池大赛\dataSet' # 数据集总目录
 ARRYTHMIA_CLASSES_PATH = 'hf_round1_arrythmia.txt' # 分类文件路径
 LABEL_PATH = 'hf_round1_label.txt' # 标签文件路径
 TRAIN_PATH = 'train' # 训练集文件夹（需要手动创建）
@@ -22,8 +22,8 @@ WEIGHTS_FILE = None # 迁移模型
 # WEIGHTS_FILE = os.path.join(WEIGHTS_DIR,'ECG-100.data-00000-of-00001')  # 迁移模型
 OUTPUT_DIR = os.path.join(DATA_PATH, 'output') # 模型输出文件夹
 
-BATCH_SIZE = 40
-CACHE_SIZE = 25* BATCH_SIZE#单个缓存文件的大小
+BATCH_SIZE = 1
+CACHE_SIZE = 1000* BATCH_SIZE#单个缓存文件的大小
 TEST_CACHE_SIZE = 1000 # 测试集的单个缓存文件的大小（非必要不需要改动
 READ_STEP  = 5*CACHE_SIZE #单步读取量
 DATASET_SIZE = 24110 # 训练集的数据量
