@@ -7,6 +7,7 @@ from utils.timer import Timer
 from utils.dataPreprocessing import DATA
 import tensorflow.contrib.slim as slim
 from utils.loger import Loger
+import numpy as np
 
 class Solver():
 
@@ -78,20 +79,30 @@ class Solver():
                     # print("计算loss")
                     # 计算正确率
                     train_timer.tic()
-                    loss, _ = self.sess.run(
-                        [ self.net.loss, self.train_op],
+                    loss, _ ,rst= self.sess.run(
+                        [ self.net.loss, self.train_op,self.net.map2OneHot(self.net.labels)],
                         feed_dict=feed_dict)
                     train_timer.toc()
-                    log_str = """{},step: {}, Learing rate {},Loss: {:5.3f}\n速度: {:.3f} s/iter,预计还需要： {}""".format(
+                    rp = np.array(rst)
+                    yp = np.array(y_train)
+                    accuracy = 0
+                    for i in range(rp.shape[0]):
+                        if (rp == yp).all():
+                            accuracy += 1
+                    log_str = """{},step: {}, Learing rate {},Loss: {:5.3f},accuracy:{:5.3f}\n速度: {:.3f} s/iter,预计还需要： {}""".format(
                         datetime.datetime.now().strftime('%m-%d %H:%M:%S'),
                         int(step),
                         round(self.learning_rate.eval(session=self.sess), 6),
                         loss,
+                        accuracy / rp.shape[0],
                         train_timer.average_time,
-                        train_timer.remain(step,self.max_iter)
+                        train_timer.remain(step,self.max_iter),
+
                     )
                     self.loger.write(log_str)
                     print(log_str)
+
+
                 else:
                     # print("输出日志")
                     train_timer.tic()

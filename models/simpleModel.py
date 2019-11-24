@@ -32,7 +32,7 @@ class SimpleModel:
      def build_network(self,input,output_num,is_training):
          net = input
          net = tf.reshape(net,[tf.shape(net)[0],self.length,self.lead_count])
-         net = inference(net,trainable=is_training)
+         # net = inference(net,trainable=is_training)
          # print(net.get_shape())
          # net = res_layer2d(net)
          # print(net.get_shape())
@@ -53,7 +53,7 @@ class SimpleModel:
          # net = tf.reshape(net,[tf.shape(net)[0],self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
          # net = inference(net, is_training)
          # net = inference(net) # ResNet34 的卷积层（去掉最后一层池化）
-         # net = slim.flatten(net)
+         net = slim.flatten(net)
          net = slim.fully_connected(net, 1024, trainable=is_training)
          net = slim.fully_connected(net,256, trainable=is_training)
          net = slim.fully_connected(net,output_num, trainable=is_training, activation_fn=None)
