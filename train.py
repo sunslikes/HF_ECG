@@ -6,6 +6,7 @@ from models.simpleModel import SimpleModel
 from utils.timer import Timer
 from utils.dataPreprocessing import DATA
 import tensorflow.contrib.slim as slim
+from utils.loger import Loger
 
 class Solver():
 
@@ -42,6 +43,7 @@ class Solver():
         gpu_config = tf.ConfigProto(gpu_options=gpu_options)   # 与gpu分配相关
         self.sess = tf.Session(config=gpu_config)
         self.sess.run(tf.global_variables_initializer()) # 变量初始化
+        self.loger = Loger(self.output_dir)
 
         if self.weight_file is not None: # 加载迁移模型
             print("从"+self.weight_file+"加载模型")
@@ -87,6 +89,7 @@ class Solver():
                         train_timer.average_time,
                         train_timer.remain(step,self.max_iter)
                     )
+                    self.loger.write(log_str)
                     print(log_str)
                 else:
                     # print("输出日志")
@@ -111,6 +114,7 @@ class Solver():
                     self.output_dir
                 ))
                 self.saver.save(self.sess,self.ckpt_file,global_step=self.global_step)
+        self.loger.save()
 
 
 

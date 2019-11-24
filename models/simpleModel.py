@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 from utils import config
 from tensorflow.contrib import slim
-from models.Resnet34 import inference
+from models.MyResnet import *
 class SimpleModel:
      def __init__(self,is_training = True):
          self.net_name = "Resnet34"
@@ -30,9 +30,27 @@ class SimpleModel:
      """
      def build_network(self,input,output_num,is_training):
          net = input
+         net = tf.reshape(net,[tf.shape(net)[0],self.length,self.lead_count])
+         net = inference(net,trainable=is_training)
+         # print(net.get_shape())
+         # net = res_layer2d(net)
+         # print(net.get_shape())
+         # net = get_half(net,net.get_shape()[2])
+         # print(net.get_shape())
+         # net = res_block(net,5,64,5,name="b_1")
+         # net = get_half(net, net.get_shape()[2])
+         # net = res_block(net, 5, 128, 5,name="b_2")
+         # net = get_half(net, net.get_shape()[2])
+         # net = res_block(net, 5, 256, 5,name="b_3")
+         # net = get_half(net, net.get_shape()[2])
+         # net = res_block(net, 10, 380, 5,name="b_4")
+         # print(net.get_shape())
 
-         net = tf.reshape(net,[tf.shape(net)[0],self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
-         net = inference(net, is_training)
+
+
+         #以下是2d版本
+         # net = tf.reshape(net,[tf.shape(net)[0],self.lead_count,self.length,1]) # 将输入变成符合conv2d输入的shape
+         # net = inference(net, is_training)
          # net = inference(net) # ResNet34 的卷积层（去掉最后一层池化）
          net = slim.flatten(net)
          net = slim.fully_connected(net, 1024, trainable=is_training)
@@ -45,6 +63,7 @@ class SimpleModel:
      def map2OneHot(self,logits):
         list = []
         # list.append(logits)
+        logits = tf.nn.sigmoid(logits) # 先通一层sigmoid
         one = tf.ones_like(logits)
         zero = tf.zeros_like(logits)
         temp = tf.where(logits < self.threshold, x=zero, y=one) # 将元素二值化映射，大于threshold的设置为1，反之，0

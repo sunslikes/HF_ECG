@@ -51,7 +51,7 @@ from models.simpleModel import SimpleModel
 from utils.dataPreprocessing import DATA
 import tensorflow as tf
 def text_model():
-    data = DATA(True)
+    data = DATA(False)
     net = SimpleModel(False)
     x_train , y_train  = data.get_batch()
     op = net.map2OneHot(net.logits)
