@@ -22,6 +22,7 @@ class SimpleModel:
                  tf.float32,[None,self.label_num]
              )
              self.loss = self.get_loss(self.logits,self.labels) # 函数未构建
+             # self.accuracy = self.get_accuracy(self.logits,self.labels) # 准确度
          else:
              self.test_logits = self.map2OneHot(self.logits)
 
@@ -31,7 +32,7 @@ class SimpleModel:
      def build_network(self,input,output_num,is_training):
          net = input
          net = tf.reshape(net,[tf.shape(net)[0],self.length,self.lead_count])
-         net = inference(net,trainable=is_training)
+         # net = inference(net,trainable=is_training)
          # print(net.get_shape())
          # net = res_layer2d(net)
          # print(net.get_shape())
@@ -82,6 +83,17 @@ class SimpleModel:
          # return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
          # return out
          return  tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=logits,labels=labels))
+     # def get_accuracy(self,logits,labels):
+     #     rst = self.map2OneHot(logits=logits) # 映射
+     #     l = logits.get_shape() # batch_size
+     #     print(l)
+     #     accuracy = tf.Variable(initial_value=0,dtype=tf.float32)
+     #     accuracy = tf.subtract(accuracy,accuracy) # 清零
+     #     for i in range(l):
+     #         b = tf.reduce_mean(tf.cast(tf.equal(rst[i], labels[i]),'float'))
+     #         accuracy = tf.add(accuracy,b)
+     #
+     #     return tf.div(accuracy,l)
 
 if __name__ == '__main__':
     model = SimpleModel(True)
