@@ -39,7 +39,7 @@ def res_block(input_tensor,kshape,deph,layer = 0,half = False,name = None, train
         return data
 
 CONV_SIZE = 3
-CONV_DEEP = 64
+CONV_DEEP = 8
 NUM_LABELS = 10
 
 
@@ -51,6 +51,7 @@ def inference(input_tensor, regularizer = None, trainable=True):
 
             data = slim.conv1d(input_tensor, CONV_DEEP , 7, trainable=trainable)
             # data = slim.max_pool2d(data,[2,2],stride=2)
+            # data = tf.layers.average_pooling1d(inputs=data, pool_size=2, strides=1)
 
             with tf.variable_scope("resnet_layer"):
 

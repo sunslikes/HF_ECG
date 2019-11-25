@@ -8,6 +8,7 @@ from utils.dataPreprocessing import DATA
 import tensorflow.contrib.slim as slim
 from utils.loger import Loger
 import numpy as np
+import math
 
 class Solver():
 
@@ -36,7 +37,7 @@ class Solver():
         self.learning_rate = tf.train.exponential_decay(
             self.initial_learning_rate, self.global_step, self.decay_steps,
             self.decay_rate, self.staircase, name='learning_rate') # 生成学习率，采用了衰退学习率
-        self.optimizer = tf.train.GradientDescentOptimizer(
+        self.optimizer = tf.train.AdamOptimizer(
             learning_rate=self.learning_rate)                  # 优化器
         self.train_op = slim.learning.create_train_op(
             self.net.loss, self.optimizer, global_step=self.global_step) #训练op
@@ -83,18 +84,39 @@ class Solver():
                         [ self.net.loss, self.train_op,self.net.map2OneHot(self.net.labels)],
                         feed_dict=feed_dict)
                     train_timer.toc()
+                    # P=预测正确的心电异常事件数/预测的心电异常时间数
+                    # R为召回率，计算公式如下：
+                    # R =预测正确的心电异常事件数/总心电异常事件数
+                    # 总心电异常事件数
+                    # 预测正确的心电异常事件数
+                    # ​
+
                     rp = np.array(rst)
                     yp = np.array(y_train)
                     accuracy = 0
+                    right_event = 0 # 预测正确的心电异常事件数
+                    pre_event = 0 # 预测的事件数
+                    event_count = 0 # 总共的事件数目
                     for i in range(rp.shape[0]):
                         if (rp == yp).all():
                             accuracy += 1
-                    log_str = """{},step: {}, Learing rate {},Loss: {:5.3f},accuracy:{:5.3f}\n速度: {:.3f} s/iter,预计还需要： {}""".format(
+                        for j in range(rp.shape[0]):
+                            if math.fabs(rp[i][j] - 1) < 0.01:
+                                pre_event += 1
+                                if  math.fabs(rp[i][j] - yp[i][j]) < 0.01:
+                                    right_event += 1
+                            if math.fabs(yp[i][j] - 1) < 0.01:
+                                event_count += 1
+                    _p = right_event/pre_event
+                    _r = right_event/event_count
+                    f1 = 2*_p*_r/(_p + _r)
+                    log_str = """{},step: {}, Learing rate {},Loss: {:5.7f},accuracy:{:5.5f},f1:{:5.5f}\n速度: {:.3f} s/iter,预计还需要： {}""".format(
                         datetime.datetime.now().strftime('%m-%d %H:%M:%S'),
                         int(step),
                         round(self.learning_rate.eval(session=self.sess), 6),
                         loss,
                         accuracy / rp.shape[0],
+                        f1,
                         train_timer.average_time,
                         train_timer.remain(step,self.max_iter),
 

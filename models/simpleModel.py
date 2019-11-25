@@ -31,8 +31,9 @@ class SimpleModel:
      """
      def build_network(self,input,output_num,is_training):
          net = input
-         net = tf.reshape(net,[tf.shape(net)[0],self.length,self.lead_count])
-         # net = inference(net,trainable=is_training)
+         # net = tf.reshape(net,[tf.shape(net)[0],self.length,self.lead_count]) 错误的逻辑
+         net = tf.transpose(net, perm=[0, 2, 1]) #转置
+         net = inference(net,trainable=is_training)
          # print(net.get_shape())
          # net = res_layer2d(net)
          # print(net.get_shape())
