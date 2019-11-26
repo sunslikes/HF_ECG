@@ -93,6 +93,9 @@ class Solver():
                     np.set_printoptions(threshold=1e6)
                     rp = np.array(rst)
                     yp = y_train
+                    print(rp[0])
+                    print('------')
+                    print(yp[0])
                     accuracy = 0
                     right_event = 0 # 预测正确的心电异常事件数
                     pre_event = 0 # 预测的事件数

@@ -35,8 +35,8 @@ LENGTH = 5000  # 数据十秒内记录的次数
 LEAD_COUNT = 8 # 导联数，默认按
 LABEL_NUM = 55 # 异常标签数
 
-LEARNING_RATE = 0.01 # 学习率 0.05
-DECAY_STEPS = 10000 #
+LEARNING_RATE = 0.05 # 学习率 0.05
+DECAY_STEPS = 30000 #
 DECAY_RATE = 0.1 # 衰退率
 STAIRCASE = True # 若为true，每DECAY_STEPS次迭代更新学习率，反之，每次迭代都更新
 THRESHOLD = 0.5 # sigmoid函数出来超过这个值将映射为1

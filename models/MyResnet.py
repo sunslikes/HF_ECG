@@ -51,7 +51,7 @@ def inference(input_tensor, regularizer = None, trainable=True):
 
             data = slim.conv1d(input_tensor, CONV_DEEP , 15, trainable=trainable)
             # data = slim.max_pool2d(data,[2,2],stride=2)
-            data = tf.layers.max_pooling1d(inputs=data, pool_size=3, strides=2,padding=1)
+            data = tf.nn.max_pool1d(input=data, ksize=3, strides=2,padding='SAME')
 
             with tf.variable_scope("resnet_layer"):
 
@@ -62,4 +62,6 @@ def inference(input_tensor, regularizer = None, trainable=True):
 
                 # data = slim.avg_pool2d(data,[2,2],stride=2) # 此时tensor的shape是：[10,1,313,512]，无法继续池化.
                 # data = tf.layers.average_pooling1d(inputs=data, pool_size=3, strides=2, padding=1)
+                data = tf.layers.average_pooling1d(inputs=data, pool_size=data.shape.as_list()[1],
+                                                   strides=1)  # (batch_siaze,1,512)
                 return data
