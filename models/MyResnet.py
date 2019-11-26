@@ -38,9 +38,9 @@ def res_block(input_tensor,kshape,deph,layer = 0,half = False,name = None, train
             data = res_layer2d(input_tensor = data,deph = deph,kshape = kshape, trainable=trainable)
         return data
 
-CONV_SIZE = 3
-CONV_DEEP = 8
-NUM_LABELS = 10
+CONV_SIZE = 7 # 原本是 3
+CONV_DEEP = 64 #8 loss下降不了
+# NUM_LABELS = 10
 
 
 #定义模型传递流程
@@ -49,16 +49,17 @@ def inference(input_tensor, regularizer = None, trainable=True):
 
         with tf.variable_scope("layer1-initconv"):
 
-            data = slim.conv1d(input_tensor, CONV_DEEP , 7, trainable=trainable)
+            data = slim.conv1d(input_tensor, CONV_DEEP , 15, trainable=trainable)
             # data = slim.max_pool2d(data,[2,2],stride=2)
-            # data = tf.layers.average_pooling1d(inputs=data, pool_size=2, strides=1)
+            data = tf.layers.max_pooling1d(inputs=data, pool_size=3, strides=2,padding=1)
 
             with tf.variable_scope("resnet_layer"):
 
                 data = res_block(input_tensor = data,kshape = CONV_SIZE,deph = CONV_DEEP,layer = 6,half = False,name = "layer4-9-conv", trainable=trainable)
                 data = res_block(input_tensor = data,kshape = CONV_SIZE,deph = CONV_DEEP * 2,layer = 8,half = True,name = "layer10-15-conv", trainable=trainable)
-                data = res_block(input_tensor = data,kshape = CONV_SIZE,deph = CONV_DEEP * 4,layer = 12,half = True,name = "layer16-27-conv", trainable=trainable)
+                data = res_block(input_tensor = data,kshape = CONV_SIZE + 4,deph = CONV_DEEP * 4,layer = 12,half = True,name = "layer16-27-conv", trainable=trainable)
                 data = res_block(input_tensor = data,kshape = CONV_SIZE,deph = CONV_DEEP * 8,layer = 6,half = True,name = "layer28-33-conv", trainable=trainable)
 
                 # data = slim.avg_pool2d(data,[2,2],stride=2) # 此时tensor的shape是：[10,1,313,512]，无法继续池化.
+                # data = tf.layers.average_pooling1d(inputs=data, pool_size=3, strides=2, padding=1)
                 return data

@@ -37,7 +37,7 @@ class Solver():
         self.learning_rate = tf.train.exponential_decay(
             self.initial_learning_rate, self.global_step, self.decay_steps,
             self.decay_rate, self.staircase, name='learning_rate') # 生成学习率，采用了衰退学习率
-        self.optimizer = tf.train.AdamOptimizer(
+        self.optimizer = tf.train.GradientDescentOptimizer(
             learning_rate=self.learning_rate)                  # 优化器
         self.train_op = slim.learning.create_train_op(
             self.net.loss, self.optimizer, global_step=self.global_step) #训练op
@@ -90,9 +90,9 @@ class Solver():
                     # 总心电异常事件数
                     # 预测正确的心电异常事件数
                     # ​
-
+                    np.set_printoptions(threshold=1e6)
                     rp = np.array(rst)
-                    yp = np.array(y_train)
+                    yp = y_train
                     accuracy = 0
                     right_event = 0 # 预测正确的心电异常事件数
                     pre_event = 0 # 预测的事件数
@@ -100,23 +100,31 @@ class Solver():
                     for i in range(rp.shape[0]):
                         if (rp == yp).all():
                             accuracy += 1
-                        for j in range(rp.shape[0]):
-                            if math.fabs(rp[i][j] - 1) < 0.01:
+                        for j in range(rp.shape[1]):
+                            if abs(rp[i][j] - 1) < 0.01:
                                 pre_event += 1
-                                if  math.fabs(rp[i][j] - yp[i][j]) < 0.01:
+                                if  abs(rp[i][j] - yp[i][j]) < 0.01:
                                     right_event += 1
-                            if math.fabs(yp[i][j] - 1) < 0.01:
+                            if abs(yp[i][j] - 1) < 0.01:
                                 event_count += 1
                     _p = right_event/pre_event
                     _r = right_event/event_count
                     f1 = 2*_p*_r/(_p + _r)
-                    log_str = """{},step: {}, Learing rate {},Loss: {:5.7f},accuracy:{:5.5f},f1:{:5.5f}\n速度: {:.3f} s/iter,预计还需要： {}""".format(
+                    print("right_event:" + str(right_event))
+                    print("pre_event:" + str(pre_event))
+                    print("event_count:" + str(event_count))
+                    print("p:"+str(_p))
+                    print("r:" + str(_r))
+                    print("f1:" + str(f1))
+                    log_str = """{},step: {}, Learing rate {},Loss: {:5.7f},accuracy:{:5.5f},f1:{:5.5f}，准确率(p):{:5.4f},召回率(r):{}\n速度: {:.3f} s/iter,预计还需要： {}""".format(
                         datetime.datetime.now().strftime('%m-%d %H:%M:%S'),
                         int(step),
                         round(self.learning_rate.eval(session=self.sess), 6),
                         loss,
                         accuracy / rp.shape[0],
                         f1,
+                        _p,
+                        _r,
                         train_timer.average_time,
                         train_timer.remain(step,self.max_iter),
 
