@@ -30,7 +30,7 @@ class Test():
         self.cache_block_num = 0  # 缓存块号
         self.tdata_cache = self.load_cache(0)
         self.net = SimpleModel(False)
-        self.model_file = 'Resnet34-2019_11_23_19_06'
+        self.model_file = 'Resnet34-2019_11_27_15_26'
         self.model_dir = os.path.join(config.OUTPUT_DIR, self.model_file)
 
     """
@@ -147,5 +147,6 @@ class Test():
 
 
 if __name__ == '__main__':
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
     test = Test(False)
     test.test()

@@ -81,7 +81,7 @@ class Solver():
                     # 计算正确率
                     train_timer.tic()
                     loss, _ ,rst= self.sess.run(
-                        [ self.net.loss, self.train_op,self.net.map2OneHot(self.net.labels)],
+                        [ self.net.loss, self.train_op,self.net.map2OneHot(self.net.logits)],
                         feed_dict=feed_dict)
                     train_timer.toc()
                     # P=预测正确的心电异常事件数/预测的心电异常时间数
@@ -93,15 +93,15 @@ class Solver():
                     np.set_printoptions(threshold=1e6)
                     rp = np.array(rst)
                     yp = y_train
-                    print(rp[0])
+                    print(rp[0:5])
                     print('------')
-                    print(yp[0])
+                    print(yp[0:5])
                     accuracy = 0
                     right_event = 0 # 预测正确的心电异常事件数
                     pre_event = 0 # 预测的事件数
                     event_count = 0 # 总共的事件数目
                     for i in range(rp.shape[0]):
-                        if (rp == yp).all():
+                        if (rp[i] == yp[i]).all():
                             accuracy += 1
                         for j in range(rp.shape[1]):
                             if abs(rp[i][j] - 1) < 0.01:
@@ -110,9 +110,18 @@ class Solver():
                                     right_event += 1
                             if abs(yp[i][j] - 1) < 0.01:
                                 event_count += 1
-                    _p = right_event/pre_event
-                    _r = right_event/event_count
-                    f1 = 2*_p*_r/(_p + _r)
+                    try:
+                        _p = right_event/pre_event
+                    except:
+                        _p = 0
+                    try:
+                        _r = right_event/event_count
+                    except:
+                        _r = 0
+                    try:
+                        f1 = 2*_p*_r/(_p + _r)
+                    except:
+                        f1 = 0
                     print("right_event:" + str(right_event))
                     print("pre_event:" + str(pre_event))
                     print("event_count:" + str(event_count))
