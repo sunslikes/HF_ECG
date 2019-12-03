@@ -183,7 +183,10 @@ class DATA:
             return self.data_cache[cache_cur:cache_cur + self.batch_size], self.labcel_cache[
                                                                            cache_cur:cache_cur + self.batch_size]
 if __name__ == '__main__':
-    VOC = DATA(True)
+    VOC = DATA(False)
+    print(VOC.classes)
+    _,y = VOC.get_batch()
+    print(type(y[0][0]))
     # print(VOC.ECG_Batch)
     # print(VOC.ECG_Batch.shape)
     # with open(VOC.cache_path + 'batch','wb') as f:

@@ -1,6 +1,7 @@
 import tensorflow as tf
 from utils import config as cfg
-from utils.dataPreprocessing import DATA
+# from utils.dataPreprocessing import DATA
+from utils.MyData import DATA
 import os
 import numpy as np
 
@@ -36,16 +37,22 @@ np.set_printoptions(threshold=1e6)
 path = os.path.join(cfg.OUTPUT_DIR,'Resnet34-2019_11_26_23_20')
 path = tf.train.latest_checkpoint(path)
 print(path)
-data = DATA(False)
+data = DATA()
 net = SimpleModel(False)
 op = net.test_logits
-data.get_batch()
-data.get_batch()
-data.get_batch()
-data.get_batch()
-data.get_batch()
-data.get_batch()
-x,_ = data.get_batch()
+# data.get_batch()
+# data.get_batch()
+# data.get_batch()
+# data.get_batch()
+# data.get_batch('train')
+# data.get_batch('train')
+# data.get_batch('train')
+data.train_point = 1000
+data.batch_size = 40
+x,_ = data.get_batch('train')
+# x,_ = data.get_batch()
+x = x.transpose(0,2,1)
+print(x.dtype)
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     saver = tf.train.Saver()
