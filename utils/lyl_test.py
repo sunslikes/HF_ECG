@@ -1,5 +1,6 @@
 from models.simpleModel import SimpleModel
-from utils.dataPreprocessing import DATA
+# from utils.dataPreprocessing import DATA
+from utils.MyData import DATA
 import tensorflow as tf
 import numpy as np
 
@@ -9,22 +10,27 @@ def get_loss(logits, labels):
     # return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
     return out
 def test_model():
-    data = DATA(False)
-    net = SimpleModel(True)
-    x_train , y_train  = data.get_batch()
+    data = DATA()
+    data.batch_size = 2 # 设置小bach_size
+    net = SimpleModel(True,weight=data.loss_weight)
+    x_train , y_train  = data.get_batch('train')
+    x_train = x_train.transpose(0,2,1)
     logits = net.logits
     op = net.map2OneHot(net.logits)
     loss = net.loss
-    accuracy_op = net.accuracy
+    show_loss = net.show_lost
+    show_weighted_loss = net.show_weighted_lost
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
-        logits_result,loss_result,result,accuracy = sess.run([logits,loss,op,accuracy_op],feed_dict={net.input:x_train , net.labels :y_train})
+        logits_result,loss_result,result,show_loss_result,weited_loss_result = sess.run([logits,loss,op,show_loss,show_weighted_loss],feed_dict={net.input:x_train , net.labels :y_train})
         # result = sess.run(op,feed_dict={net.input:x_train , net.labels :y_train})
     print('logits'+ str(logits_result))
     print('map_to: ' + str(result))
     print('labels : ' + str(y_train))
     print('loss: '+ str(loss_result))
-    print('accuracy: ' + str(accuracy))
+    print('show_loss' + str(show_loss_result.tolist()))
+    print('weighted_loss' + str(weited_loss_result.tolist()))
+    print('weight' +str(data.loss_weight.tolist()))
 def test_loss():
     logits = tf.zeros([10,55])
     _ = [x for x in range(0,55)]

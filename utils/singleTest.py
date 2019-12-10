@@ -34,7 +34,7 @@ from models.simpleModel import SimpleModel
 #     st = singleTest()
 #     st.test_a_betch()
 np.set_printoptions(threshold=1e6)
-path = os.path.join(cfg.OUTPUT_DIR,'Resnet34-2019_11_26_23_20')
+path = os.path.join(cfg.OUTPUT_DIR,'Resnet34-2019_12_05_20_26')
 path = tf.train.latest_checkpoint(path)
 print(path)
 data = DATA()
@@ -48,8 +48,10 @@ op = net.test_logits
 # data.get_batch('train')
 # data.get_batch('train')
 data.train_point = 1000
-data.batch_size = 40
-x,_ = data.get_batch('train')
+data.batch_size = 1000
+x,_ = data.get_batch('test')
+index = data.train_index[data.train_point:data.train_point+data.batch_size]
+print("====================================" + str(index))
 # x,_ = data.get_batch()
 x = x.transpose(0,2,1)
 print(x.dtype)

@@ -4,13 +4,14 @@ from utils import config
 from tensorflow.contrib import slim
 from models.MyResnet import *
 class SimpleModel:
-     def __init__(self,is_training = True):
+     def __init__(self,is_training = True, weight = 1):
          self.net_name = "Resnet34"
          self.lead_count = config.LEAD_COUNT # 导联数
          self.length = config.LENGTH #  数据十秒内记录的次数
          self.label_num = config.LABEL_NUM # 预测异常数量
          self.threshold = config.THRESHOLD # 阈值，超过该值则映射为1
          self.batch_size = config.BATCH_SIZE
+         self.loss_weight = weight
          self.input = tf.placeholder(
              tf.float32, [None,self.lead_count,self.length]
          )
@@ -22,6 +23,7 @@ class SimpleModel:
                  tf.float32,[None,self.label_num]
              )
              self.loss = self.get_loss(self.logits,self.labels) # 函数未构建
+
              # self.accuracy = self.get_accuracy(self.logits,self.labels) # 准确度
          else:
              self.test_logits = self.map2OneHot(self.logits)
@@ -77,13 +79,14 @@ class SimpleModel:
      返回损失函数
      """
      def get_loss(self,logits,labels):
+         loss = tf.nn.sigmoid_cross_entropy_with_logits(logits=logits,labels=labels)
+         loss_mult_weight = loss * self.loss_weight
+         self.show_lost = loss # 用于调试
+         self.show_weighted_lost = loss_mult_weight # 用于调试
+         return tf.reduce_mean(loss_mult_weight)
 
-         # logits = self.map2OneHot(logits) # 映射
 
-         # out = -tf.reduce_mean(labels*tf.log(tf.clip_by_value(logits,1e-10,1.0)))
-         # return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
-         # return out
-         return  tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=logits,labels=labels))
+         # return  tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=logits,labels=labels))
      # def get_accuracy(self,logits,labels):
      #     rst = self.map2OneHot(logits=logits) # 映射
      #     l = logits.get_shape() # batch_size

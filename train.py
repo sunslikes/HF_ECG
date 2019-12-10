@@ -206,9 +206,11 @@ class Solver():
                     print("p:" + str(_p))
                     print("r:" + str(_r))
                     print("f1:" + str(f1))
-                    log_str = """【测试集验证】{},step: {}, Learing rate {},Loss: {:5.7f},accuracy:{:5.5f},f1:{:5.5f}，准确率(p):{:5.4f},召回率(r):{}\n速度: {:.3f} s/iter,预计还需要： {}""".format(
+                    log_str = """【测试集验证】{}epcho:{},step: {}, Learing rate {},Loss: {:5.7f},accuracy:{:5.5f},f1:{:5.5f}，准确率(p):{:5.4f},召回率(r):{}\n速度: {:.3f} s/iter,预计还需要： {}""".format(
                         datetime.datetime.now().strftime('%m-%d %H:%M:%S'),
+                        int(data.echo),
                         int(step),
+
                         round(self.learning_rate.eval(session=self.sess), 6),
                         loss,
                         accuracy / rp.shape[0],
@@ -244,6 +246,6 @@ if __name__ == '__main__':
     # tf.device('/GPU')
     os.environ["CUDA_VISIBLE_DEVICES"] = "1"
     data = DATA()
-    net = SimpleModel()
+    net = SimpleModel(is_training=True,weight=data.loss_weight)
     solver = Solver(net,data)
     solver.train()

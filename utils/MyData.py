@@ -17,6 +17,7 @@ class DATA():
         self.train_point = -self.batch_size # 训练指针
         self.test_point = -self.batch_size # 测试指针
         self.echo = 0 # 训练集循环数
+        self.loss_weight = self.get_weight() # 根据训练集计算出各个类别的比例，向量各个元素和为1
 
 
 
@@ -79,8 +80,21 @@ class DATA():
     '''
     def get_batch(self,type):
         if type == 'train':
-            if self.train_point + self.batch_size >= self.train_index.__len__():
+            if self.train_point + self.batch_size + self.batch_size >= self.train_index.__len__():
                 self.echo += 1
+                # self.train_point += self.batch_size
+                # p1 = self.train_point
+                # hx = self.read_data(self.train_index[p1:(p1+self.batch_size)%self.train_index.__len__()],
+                #                   self.train_path)
+                # ty = self.read_data(self.train_index[0:self.batch_size-(self.train_index.__len__()-p1+1)],
+                #                   self.train_path)
+                # x  = np.append(hx,ty)
+                # hy = self.train_label[p1:(p1+self.batch_size)%self.train_label.__len__()]
+                # ty = self.train_label[self.train_index[0:self.batch_size-(self.train_index.__len__()-p1+1)]]
+                # y = np.append(hy,ty)
+                # return np.array(x),np.array(y).tolist(y)
+                self.train_point = -self.batch_size # 指针回零
+                self.train_index,self.train_label = self.shuffle(self.train_index,self.train_label) # 重新打乱数组
             self.train_point += self.batch_size
             p = self.train_point
             x = self.read_data(self.train_index[p:(p+self.batch_size)%self.train_index.__len__()],
@@ -88,6 +102,8 @@ class DATA():
             y = self.train_label[p:(p+self.batch_size)%self.train_label.__len__()]
             return np.array(x),np.array(y).tolist()
         if type == 'test':
+            if self.test_point + self.batch_size + self.batch_size >= self.test_index.__len__():
+                self.test_point = -self.batch_size # 指针回零
             self.test_point += self.batch_size
             p = self.test_point
             x = self.read_data(self.test_index[p:(p+self.batch_size)%self.test_index.__len__()],
@@ -101,6 +117,29 @@ class DATA():
         np.random.shuffle(a)
         a = a.transpose() # 转置回来
         return a[0],a[1]
+    def get_weight(self):
+        count_array = [0 for _ in self.class_table] # 初始化为0
+        f = open(self.label_file,'r',encoding='utf-8')
+        while(True):
+            line = f.readline().replace('\n','')
+            if line.__len__() < 1:
+                break
+            items = line.split('\t')
+            for item in items[:50]:
+                for i in range(len(self.class_table)):
+                    if self.class_table[i] == item: # 查表找到
+                        count_array[i] += 1
+        # print(count_array)
+        count_array = np.array(count_array,dtype=np.float)
+        sum = np.sum(count_array)
+        # print(count_array)
+        # print(sum)
+        weight = np.divide(count_array,sum) # 正相关weight
+        weight1 = np.divide(1,np.log(count_array)) # 负相关weight
+        # print(weight.tolist(),'11111')
+        # print(weight1.tolist())
+        # print(np.sum(weight))
+        return weight1
 
 
 
@@ -111,6 +150,7 @@ class DATA():
 
 if __name__ == '__main__':
     data = DATA()
+    data.get_weight()
     # index = data.train_index[0:5]
     # label = data.train_label[0:5]
     # a = np.array([index,label])
@@ -122,10 +162,23 @@ if __name__ == '__main__':
     # print(a)
     # a = a.transpose()
     # print(a)
-
-    print(data.train_index[0])
-    print(data.train_label[0])
-    print(data.get_batch('train')[0])
+    # data.train_point = 22000
+    # data.batch_size = 1000
+    # print(data.get_batch('train')[0].shape)
+    # print(data.echo)
+    # print(data.train_point)
+    # print(data.get_batch('train')[0].shape)
+    # print(data.echo)
+    # print(data.train_point)
+    # print(data.get_batch('train')[0].shape)
+    # print(data.get_batch('train')[0].shape)
+    # print(data.train_index[0])
+    # print(data.echo)
+    # print(data.train_index[0])
+    # print(data.train_label[0])
+    # print(data.get_batch('train')[0])
+    # print(data.echo)
+    # print(data.train_index[0])
     # x,y = data.get_batch('train')
     # xt,yt = data.get_batch('test')
     # print(xt[0:5])
